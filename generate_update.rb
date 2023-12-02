@@ -44,6 +44,7 @@ class EmailUpdate
 
   def generate!
     out = CSV.open("update.csv", "wb")
+    master = CSV.open("master_list.csv", "wb")
     #out << ["email", "first name", "last name"]
     @import.each do |row|
       email = row[6].downcase.strip.gsub(" ", "")
@@ -53,9 +54,14 @@ class EmailUpdate
       subscribed = in_subscribed?(email)
       if valid && !cleaned && !unsubscribed && !subscribed
         out << [email, row[0], row[1]]
+        master << [email, row[0], row[1]]
+      end
+      if subscribed
+        master << [email, row[0], row[1]]
       end
     end
     out.close
+    master.close
   end
 end
 
